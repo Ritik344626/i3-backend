@@ -4,9 +4,11 @@ import passport from "passport";
 import { Strategy, ExtractJwt } from "passport-jwt";
 import { Strategy as LocalStrategy } from "passport-local";
 import createError from "http-errors";
-import * as userService from "../../user/user.service";
+// import * as user from "../../user/user.service";
 import { type Request } from "express";
-import { type IUser } from "../../user/user.dto";
+import { IUser } from "../../schema/user";
+// import { type IUser } from "../../user/user.dto";
+import * as user from "../../services/user"
 
 const isValidPassword = async function (value: string, password: string) {
   const compare = await bcrypt.compare(value, password);
@@ -40,13 +42,13 @@ export const initPassport = (): void => {
       },
       async (email, password, done) => {
         try {
-          const user = await userService.getUserByEmail(email);
-          if (user == null) {
+          const users = await user.getUserByEmail(email);
+          if (users == null) {
             done(createError(401, "User not found!"), false);
             return;
           }
 
-          if (!user.active) {
+          if (!users.active) {
             done(createError(401, "User is inactive"), false);
             return;
           }
@@ -56,12 +58,12 @@ export const initPassport = (): void => {
           //   return;
           // }
 
-          const validate = await isValidPassword(password, user.password);
+          const validate = await isValidPassword(password, users.password);
           if (!validate) {
             done(createError(401, "Invalid email or password"), false);
             return;
           }
-          const { password: _p, ...result } = user;
+          const { password: _p, ...result } = users;
           done(null, result, { message: "Logged in Successfully" });
         } catch (error: any) {
           done(createError(500, error.message));
