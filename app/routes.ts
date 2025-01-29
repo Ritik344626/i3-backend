@@ -7,7 +7,7 @@ import portfolioRoutes from "./routes/portfolio";
 // routes
 const router = express.Router();
 
-router.use("/routes", user);
+router.use("/users", user);
 router.use("/payments", payment);
 router.use("/portfolios", portfolioRoutes); // Add portfolio routes
 export default router;

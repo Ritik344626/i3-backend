@@ -35,3 +35,15 @@ export const getAllUser = asyncHandler(async (req: Request, res: Response) => {
     const result = await user.getAllUser();
     res.send(createResponse(result))
 });
+
+export const getLoggedInUser = asyncHandler(async (req: Request, res: Response) => {
+    const id = req.user?._id;
+    const result = await user.getUserById(id || "");
+    res.send(createResponse(result))
+});
+
+export const loginUser = asyncHandler(async (req: Request, res: Response) => {
+    const {email, password} = req.body;
+    const result = await user.loginUser(email, password);
+    res.send(createResponse(result));
+})

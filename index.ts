@@ -9,7 +9,7 @@ import { loadConfig } from "./app/common/helper/config.hepler";
 import errorHandler from "./app/common/middleware/error-handler.middleware";
 import routes from "./app/routes";
 import { IUser } from "./app/schema/user";
-
+import cors from "cors";
 loadConfig();
 
 declare global {
@@ -25,6 +25,14 @@ const port = Number(process.env.PORT) ?? 5000;
 
 const app: Express = express();
 
+const corsOptions = {
+  origin: process.env.CORS_ORIGIN || "*",
+  methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+  credentials: true,
+  allowedHeaders: "Content-Type,Authorization", 
+};
+
+app.use(cors(corsOptions)); 
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -32,22 +40,16 @@ app.use(express.json());
 app.use(morgan("dev"));
 
 const initApp = async (): Promise<void> => {
-  // init mongodb
   await initDB();
 
-  // passport init
   initPassport();
 
-  // set base path to /api
   app.use("/api", routes);
 
   app.get("/", (req: Request, res: Response) => {
     res.send({ status: "ok" });
   });
 
-
-
-  // error handler
   app.use(errorHandler);
   http.createServer(app).listen(port, () => {
     console.log("Server is runnuing on port", port);
