@@ -4,8 +4,8 @@
   "scripts": {
     "local": "nodemon",
     "start": "ts-node ./index.ts",
-    "dev": "pnpm run build && node ./dist/index.js",
-    "prod": "pnpm run build && node ./dist/index.js",
+    "dev": "npm run build && node ./dist/index.js",
+    "prod": "npm run build && node ./dist/index.js",
     "build": "npx tsc",
     "lint": "eslint . --ext .ts,.js --max-warnings=0",
     "lint:fix": "eslint --fix --ext .js,.ts .",
